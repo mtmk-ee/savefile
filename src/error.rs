@@ -26,6 +26,8 @@ pub enum ProfileError {
     AlreadyExists,
     #[error("invalid base directory: {0}")]
     InvalidBase(PathBuf),
+    #[error("invalid delay: {0}")]
+    InvalidDelay(f32),
 }
 
 #[derive(thiserror::Error, Debug)]

@@ -41,8 +41,11 @@ impl Profile {
         let path = path.as_ref().to_owned();
         let contents =
             std::fs::read(&path).or_else(|_| Err(ProfileError::NoSuchProfile(path.clone())))?;
-        let profile = serde_json::from_slice(&contents)
+        let profile: Profile = serde_json::from_slice(&contents)
             .or_else(|_| Err(ProfileError::InvalidFormat(path)))?;
+        if profile.delay <= 0f32 {
+            Err(ProfileError::InvalidDelay(profile.delay))?
+        }
         Ok(profile)
     }
 
