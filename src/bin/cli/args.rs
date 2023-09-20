@@ -88,11 +88,12 @@ pub enum BackupCmd {
         #[clap(short, long)]
         count: Option<usize>,
     },
+    /// Delete backups for the given profile
     Delete {
-        /// Name of the profile to purge backups for
+        /// Name of the profile
         #[clap(short, long)]
         name: String,
-        /// Name of the profile to purge backups for
+        /// Delete only the backup with the given ID
         #[clap(short, long, default_value = None)]
         id: Option<Id>,
     },
