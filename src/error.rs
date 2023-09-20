@@ -10,9 +10,9 @@ pub enum Error {
     Sqlite(#[from] SqliteError),
     #[error("io error: {0}")]
     Io(#[from] IoError),
-    #[error("profile error: {0}")]
+    #[error("{0}")]
     ProfileError(#[from] ProfileError),
-    #[error("backup error: {0}")]
+    #[error("{0}")]
     BackupError(#[from] BackupError),
 }
 
@@ -20,14 +20,12 @@ pub enum Error {
 pub enum ProfileError {
     #[error("invalid profile format: {0}")]
     InvalidFormat(PathBuf),
-    #[error("invalid profile format: {0}")]
-    SerializationError(#[from] serde_json::Error),
-    #[error("no profile with the given name: {0}")]
+    #[error("no profile at: {0}")]
     NoSuchProfile(PathBuf),
     #[error("profile already exists")]
     AlreadyExists,
-    #[error("invalid base directory")]
-    InvalidBase,
+    #[error("invalid base directory: {0}")]
+    InvalidBase(PathBuf),
 }
 
 #[derive(thiserror::Error, Debug)]

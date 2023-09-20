@@ -58,6 +58,6 @@ fn create_watcher(profile: &Profile, tx: Sender<()>) -> Result<Watcher> {
     .expect("failed to create watcher");
     watcher
         .watch(&profile.base(), RecursiveMode::Recursive)
-        .or(Err(ProfileError::InvalidBase))?;
+        .or(Err(ProfileError::InvalidBase(profile.base().to_owned())))?;
     Ok(watcher)
 }
