@@ -99,7 +99,9 @@ pub fn delete_all_backups(db: &Database, profile: &str) -> Result<()> {
     let backup_table = db.backup_table(profile)?;
     let backup_dir = save_dir()?.join(profile);
     backup_table.drop()?;
-    std::fs::remove_dir_all(backup_dir)?;
+    std::fs::remove_dir_all(&backup_dir)?;
+    // need to restore the directory for other commands to work
+    std::fs::create_dir(&backup_dir)?;
     Ok(())
 }
 

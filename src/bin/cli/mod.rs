@@ -66,7 +66,7 @@ pub fn delete_profile(name: &str) -> Result<()> {
     if !profile_path.exists() {
         Err(ProfileError::NoSuchProfile(profile_path.clone()))?;
     }
-    if confirm("Removing profile will remove all its backups. Continue?") {
+    if confirm("Removing a profile will remove all its backups. Continue?") {
         let db = Database::open_default()?;
         delete_all_backups(&db, name)?;
         std::fs::remove_file(profile_path)?;
