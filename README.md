@@ -12,6 +12,18 @@ The tool requires a profile to be created before backups can be created. The pro
 
 Once a profile is created, it can be used to create backups. The tool will watch the base directory for changes and create a backup when a change is detected. The backup will contain the files and directories specified in the profile. Backups may be reviewed and restored using the tool.
 
+
+## Developer Installation
+
+First, make sure you have the [Rust toolchain](https://rustup.rs/) installed.
+
+Then, clone the repository and have fun with it.
+If you want to install the tool globally this way, `cd` to the repository root and run:
+
+```bash
+cargo install --path .
+```
+
 ## Usage
 
 ### Creating a Profile
