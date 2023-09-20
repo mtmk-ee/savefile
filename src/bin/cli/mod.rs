@@ -23,7 +23,11 @@ mod util;
 /// If `prefix` is given, only profiles with names starting with `prefix` will be listed.
 pub fn print_profiles(prefix: Option<String>) -> Result<()> {
     let profiles = find_profile(prefix.as_deref())?;
-    println!("{}", ProfileList(profiles).to_string());
+    if profiles.is_empty() {
+        println!("No profiles found");
+    } else {
+        println!("{}", ProfileList(profiles).to_string());
+    }
     Ok(())
 }
 
@@ -144,10 +148,14 @@ pub fn print_backups(profile_name: &str, count: Option<usize>) -> Result<()> {
     let profile = Profile::open(&profile_path(profile_name)?)?;
     let db = Database::open_default()?;
     let backups = db.backup_table(profile_name)?.select_all();
-    let count = count.unwrap_or(backups.len());
-    let table = BackupList::new(profile, backups[..count].to_vec()).to_string();
-    println!("{}", table);
-    println!("Displayed {} of {} backups", count, backups.len());
+    if backups.is_empty() {
+        println!("No backups yet for profile {}", profile_name);
+    } else {
+        let count = count.unwrap_or(backups.len());
+        let table = BackupList::new(profile, backups[..count].to_vec()).to_string();
+        println!("{}", table);
+        println!("Displayed {} of {} backups", count, backups.len());
+    }
     Ok(())
 }
 
