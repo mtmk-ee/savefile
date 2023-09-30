@@ -145,14 +145,16 @@ pub fn delete_backup(profile_name: &str, id: Option<Id>) -> Result<()> {
 
 /// Print a table of backups for the given profile.
 pub fn print_backups(profile_name: &str, count: Option<usize>) -> Result<()> {
-    let profile = Profile::open(&profile_path(profile_name)?)?;
+    // open profile for validation only
+    let _ = Profile::open(&profile_path(profile_name)?)?;
+
     let db = Database::open_default()?;
     let backups = db.backup_table(profile_name)?.select_all();
     if backups.is_empty() {
         println!("No backups yet for profile {}", profile_name);
     } else {
         let count = count.unwrap_or(backups.len());
-        let table = BackupList::new(profile, backups[..count].to_vec()).to_string();
+        let table = BackupList::new(profile_name, backups[..count].to_vec()).to_string();
         println!("{}", table);
         println!("Displayed {} of {} backups", count, backups.len());
     }

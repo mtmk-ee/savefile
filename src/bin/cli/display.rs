@@ -1,23 +1,28 @@
 use std::path::PathBuf;
 
-use savefile::{Backup, Profile};
+use savefile::{filesystem::backup_dir, Backup};
 use tabled::{builder::Builder, settings::Style};
+
+use super::util::path_str;
 
 /// A list of backups.
 ///
 /// Primarily used for displaying backups in a table.
-pub struct BackupList {
-    profile: Profile,
+pub struct BackupList<'a> {
+    profile_name: &'a str,
     backups: Vec<Backup>,
 }
 
-impl BackupList {
-    pub fn new(profile: Profile, backups: Vec<Backup>) -> Self {
-        Self { profile, backups }
+impl<'a> BackupList<'a> {
+    pub fn new(profile_name: &'a str, backups: Vec<Backup>) -> Self {
+        Self {
+            profile_name,
+            backups,
+        }
     }
 }
 
-impl ToString for BackupList {
+impl ToString for BackupList<'_> {
     fn to_string(&self) -> String {
         let mut table = Builder::new();
         table.set_header(vec![
@@ -26,15 +31,14 @@ impl ToString for BackupList {
             "Path".to_owned(),
         ]);
         self.backups.iter().for_each(|backup| {
+            let path = match backup_dir(&self.profile_name, backup.id()) {
+                Ok(path) => path_str(&path),
+                Err(_) => "(invalid)".to_owned(),
+            };
             table.push_record(vec![
                 backup.id().to_string(),
                 backup.timestamp().to_string(),
-                self.profile
-                    .base()
-                    .join(&backup.tag())
-                    .display()
-                    .to_string()
-                    .replace("\\", "/"),
+                path,
             ]);
         });
         table.build().with(Style::ascii_rounded()).to_string()
